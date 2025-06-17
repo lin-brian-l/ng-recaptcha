@@ -33,19 +33,17 @@
         </mat-radio-group>
       </mat-menu>
 
-      <a *ngIf="!mobileQuery.matches" mat-button href="https://github.com/DethAriel/ng2-recaptcha">
+      @if (!mobileQuery.matches) {
+      <a mat-button href="https://github.com/DethAriel/ng2-recaptcha">
         <!-- TODO: misalignment exists in Material buttons with custom icons -->
         <mat-icon style="line-height: 1" svgIcon="octocat"></mat-icon>
         <span>GitHub</span>
       </a>
-      <a
-        *ngIf="mobileQuery.matches"
-        aria-label="GitHub repository"
-        mat-icon-button
-        href="https://github.com/DethAriel/ng2-recaptcha"
-      >
+      } @else {
+      <a aria-label="GitHub repository" mat-icon-button href="https://github.com/DethAriel/ng2-recaptcha">
         <mat-icon svgIcon="octocat"></mat-icon>
       </a>
+      }
     </mat-toolbar-row>
   </mat-toolbar>
 
@@ -60,36 +58,36 @@
     >
       <mat-nav-list>
         <h3>Examples</h3>
+        @for (link of navLinks; track link) {
         <a
           mat-list-item
-          *ngFor="let link of navLinks"
           [routerLink]="[link.path]"
           queryParamsHandling="preserve"
           [class.active]="page && page.feature === link.feature"
         >
           {{ link.label }}
         </a>
+        }
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="layout">
         <mat-toolbar color="primary">
-          <button
-            mat-icon-button
-            *ngIf="mobileQuery.matches"
-            (click)="sidebarOpened = true"
-            aria-label="See navigation"
-          >
+          @if (mobileQuery.matches) {
+          <button mat-icon-button (click)="sidebarOpened = true" aria-label="See navigation">
             <mat-icon>menu</mat-icon>
           </button>
-          <span data-cy="page-title" *ngIf="page">{{ page.title }}</span>
+          } @if (page) {
+          <span data-cy="page-title">{{ page.title }}</span>
+          }
         </mat-toolbar>
         <main>
           <div class="example-container">
             <router-outlet></router-outlet>
           </div>
 
-          <mat-tab-group *ngIf="page">
+          @if (page) {
+          <mat-tab-group>
             <mat-tab>
               <ng-template mat-tab-label>
                 <code>{{ page.feature }}.component.html</code>
@@ -108,13 +106,16 @@
               </ng-template>
               <pre [innerHTML]="page.content.module"></pre>
             </mat-tab>
-            <mat-tab *ngIf="page.content.additional">
+            @if (page.content.additional) {
+            <mat-tab>
               <ng-template mat-tab-label>
                 <code>{{ page.content.additional.title }}</code>
               </ng-template>
               <pre [innerHTML]="page.content.additional.content"></pre>
             </mat-tab>
+            }
           </mat-tab-group>
+          }
         </main>
         <footer>
           <div>
